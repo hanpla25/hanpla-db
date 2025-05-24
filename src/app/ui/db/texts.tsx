@@ -12,16 +12,19 @@ export default async function Texts() {
   }
 
   return (
-    <div className="mt-5 mx-4 p-4 bg-white rounded-[30px] shadow-md min-h-24 max-w-[1244px] xl:mx-auto">
-      <div className="flex justify-end mb-2">
-        <button className="text-sm text-blue-500 hover:underline">
-          첨부파일
-        </button>
-      </div>
-      {texts.map((text, index) => (
-        <p key={index} className="mb-2">
-          {text.text}
-        </p>
+    <div className="mt-5 mx-4 xl:mx-auto max-w-7xl space-y-5">
+      {texts.map((text: any, index: number) => (
+        <div
+          key={text.id || index}
+          className="p-4 bg-white rounded-[30px] shadow-md min-h-24"
+        >
+          <div className="flex justify-end mb-2">
+            <button className="text-sm text-blue-500 hover:underline">
+              첨부파일
+            </button>
+          </div>
+          <p>{text.text}</p>
+        </div>
       ))}
     </div>
   );

@@ -36,9 +36,15 @@ export async function login(_prevState: LoginFormState, formData: FormData) {
       message: "비밀번호가 일치하지 않습니다.",
     };
   }
-  
+
   const cookieStore = await cookies();
-  cookieStore.set("userid", String(user.id), {
+  cookieStore.set("userid", String(user.userid), {
+    httpOnly: true,
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+  cookieStore.set("username", String(user.username), {
     httpOnly: true,
     path: "/",
     secure: process.env.NODE_ENV === "production",
@@ -84,4 +90,47 @@ export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete("userid");
   redirect("/");
+}
+
+export async function post(_prevState: any, formData: FormData) {
+  const text = formData.get("text")?.toString();
+
+  if (!text || text.trim() === "") {
+    return {
+      error: "내용이 비어 있습니다.",
+      message: "",
+    };
+  }
+
+  const supabase = await createClient();
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userid")?.value;
+  const userName = cookieStore.get("username")?.value;
+
+  if (!userId) {
+    return {
+      error: "로그인이 필요합니다.",
+      message: "",
+    };
+  }
+
+  const { error } = await supabase.from("texts").insert([
+    {
+      text,
+      userid: userId,
+      username: userName,
+    },
+  ]);
+
+  if (error) {
+    return {
+      error: "저장 중 오류가 발생했습니다.",
+      message: "",
+    };
+  }
+
+  return {
+    error: undefined,
+    message: "저장 성공",
+  };
 }

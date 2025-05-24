@@ -1,23 +1,14 @@
 "use server";
 import { createClient } from "@/supabase/server";
 import { cookies } from "next/headers";
+import { UserCookie } from "./definitions";
 
-export async function getUser() {
-  const supabase = await createClient();
+export async function getUser(): Promise<UserCookie> {
   const cookieStore = await cookies();
   const userId = cookieStore.get("userid")?.value;
+  const userName = cookieStore.get("username")?.value;
 
-  if (!userId) return null;
-
-  const { data: user, error } = await supabase
-    .from("users")
-    .select("*")
-    .eq("userid", userId)
-    .single();
-
-  if (error || !user) return null;
-
-  return user;
+  return { userId, userName };
 }
 
 export async function getText() {
