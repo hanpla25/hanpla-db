@@ -1,6 +1,8 @@
+import Header from "../ui/db/header";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import Header from "../ui/db/header";
+import Texts from "../ui/db/texts";
+import Form from "../ui/db/form";
 
 export default async function DBPage() {
   const cookieStore = await cookies();
@@ -11,8 +13,10 @@ export default async function DBPage() {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#fbfbfd] pb-24">
       <Header />
+      <Texts />
+      <Form />
     </div>
   );
 }

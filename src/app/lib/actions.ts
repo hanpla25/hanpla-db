@@ -7,14 +7,13 @@ import { redirect } from "next/navigation";
 
 export async function login(_prevState: LoginFormState, formData: FormData) {
   const supabase = await createClient();
-
   const name = formData.get("name");
   const password = formData.get("password");
 
   if (typeof name !== "string" || typeof password !== "string") {
     return {
-      error: undefined,
-      message: "이름과 비밀번호를 입력해주세요.",
+      error: "타입 에러",
+      message: "이름과 비밀번호를 제대로 입력해주세요.",
     };
   }
 
@@ -26,17 +25,18 @@ export async function login(_prevState: LoginFormState, formData: FormData) {
 
   if (error) {
     return {
-      error: error.message,
+      error: "아이디 불일치",
       message: "아이디가 일치하지 않습니다.",
     };
   }
 
   if (user.password !== password) {
     return {
-      error: undefined,
+      error: "비밀번호 불일치",
       message: "비밀번호가 일치하지 않습니다.",
     };
   }
+  
   const cookieStore = await cookies();
   cookieStore.set("userid", String(user.id), {
     httpOnly: true,
@@ -58,7 +58,7 @@ export async function signup(
 
   if (typeof name !== "string" || typeof password !== "string") {
     return {
-      error: undefined,
+      error: "타입 에러",
       message: "이름과 비밀번호를 확인하세요",
     };
   }
@@ -78,4 +78,10 @@ export async function signup(
     error: undefined,
     message: "회원가입이 완료되었습니다.",
   };
+}
+
+export async function logout() {
+  const cookieStore = await cookies();
+  cookieStore.delete("userid");
+  redirect("/");
 }

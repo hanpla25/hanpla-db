@@ -5,6 +5,6 @@ export type LoginFormState = {
 
 export type User = {
   id: number;
-  name: string;
+  username: string;
   password: string;
 };
