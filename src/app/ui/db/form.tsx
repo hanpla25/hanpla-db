@@ -1,23 +1,39 @@
+"use client";
+import { useRef } from "react";
+
 export default function Form() {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleResize = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${Math.min(textarea.scrollHeight, 168)}px`;
+    }
+  };
+
   return (
     <form
       action=""
-      className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-md flex items-center gap-2"
+      className="fixed bottom-0 left-0 w-full bg-white p-2 shadow-md flex items-center gap-2"
     >
       <label htmlFor="text" className="sr-only">
         내용
       </label>
 
-      <div className="relative flex-1">
-        <input
+      <div className="flex relative flex-1 ">
+        <textarea
           id="text"
-          type="text"
+          name="text"
           placeholder="내용"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 pr-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          ref={textareaRef}
+          onInput={handleResize}
+          rows={1}
+          className="w-full border border-gray-300 rounded-lg py-2 pl-2 pr-12 resize-none overflow-auto focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-[168px] overflow-y-scroll scrollbar-hide"
         />
         <button
           type="button"
-          className="absolute top-1/2 right-2 -translate-y-1/2 text-sm text-blue-500 hover:underline"
+          className="absolute top-2 right-2 text-sm text-blue-500 hover:underline mr-3"
         >
           첨부
         </button>

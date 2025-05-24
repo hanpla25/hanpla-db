@@ -12,10 +12,25 @@ export async function getUser() {
   const { data: user, error } = await supabase
     .from("users")
     .select("*")
-    .eq("id", userId)
+    .eq("userid", userId)
     .single();
 
   if (error || !user) return null;
 
   return user;
+}
+
+export async function getText() {
+  const supabase = await createClient();
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("userid")?.value;
+
+  const { data: texts, error } = await supabase
+    .from("texts")
+    .select("*")
+    .eq("userid", userId);
+
+  if (error || !texts) return null;
+
+  return texts;
 }
