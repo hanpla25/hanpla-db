@@ -1,27 +1,37 @@
 "use server";
 import { createClient } from "@/supabase/server";
-import { cookies } from "next/headers";
-import { UserCookie } from "./definitions";
+import { User } from "./definitions";
 
-export async function getUser(): Promise<UserCookie> {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("userid")?.value;
-  const userName = cookieStore.get("username")?.value;
+export async function getUser(userId: string | null): Promise<User | null> {
+  if (!userId) return null;
 
-  return { userId, userName };
+  const supabase = await createClient();
+
+  const { data: user, error } = await supabase
+    .from("users")
+    .select("userId, userName, password")
+    .eq("userId", userId)
+    .single();
+
+  if (error || !user) return null;
+
+  return {
+    userId: user.userId,
+    userName: user.userName,
+    password: user.password,
+  };
 }
 
-export async function getText() {
-  const supabase = await createClient();
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("userid")?.value;
+export async function getText(userId: string | null) {
+  if (!userId) return null;
 
-  const { data: texts, error } = await supabase
+  const supabase = await createClient();
+  const { data, error } = await supabase
     .from("texts")
     .select("*")
     .eq("userid", userId);
 
-  if (error || !texts) return null;
+  if (error || !data) return null;
 
-  return texts;
+  return data;
 }

@@ -27,7 +27,6 @@ export default function Form() {
 
   return (
     <>
-      {/* 저장중 모달 */}
       {pending && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white px-20 py-10 rounded-lg shadow-lg text-center text-lg font-medium ">
@@ -36,7 +35,6 @@ export default function Form() {
         </div>
       )}
 
-      {/* 저장 완료 모달 */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white px-20 py-10 rounded-lg shadow-lg text-center">
@@ -54,7 +52,6 @@ export default function Form() {
         </div>
       )}
 
-      {/* 입력 폼 */}
       <form
         action={formAction}
         className="fixed bottom-0 left-0 w-full bg-white p-2 shadow-md flex items-center gap-2"

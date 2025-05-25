@@ -1,7 +1,11 @@
 import { getText } from "@/app/lib/data";
+type Props = {
+  userId: string;
+  userName: string;
+};
 
-export default async function Texts() {
-  const texts = await getText();
+export default async function Texts({ userId }: Props) {
+  const texts = await getText(userId);
 
   if (!texts || texts.length === 0) {
     return (

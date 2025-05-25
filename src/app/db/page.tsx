@@ -6,16 +6,17 @@ import Form from "../ui/db/form";
 
 export default async function DBPage() {
   const cookieStore = await cookies();
-  const userId = cookieStore.get("userid")?.value;
+  const userId = cookieStore.get("userid")?.value ?? null;
+  const userName = cookieStore.get("username")?.value ?? null;
 
-  if (!userId) {
+  if (!userId || !userName) {
     redirect("/");
   }
 
   return (
     <div className="min-h-screen bg-[#fbfbfd] pb-24">
       <Header />
-      <Texts />
+      <Texts userId={userId} userName={userName} />
       <Form />
     </div>
   );

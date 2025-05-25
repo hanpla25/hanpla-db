@@ -1,6 +1,7 @@
 export type LoginFormState = {
   error?: string;
   message?: string;
+  input?: string;
 };
 
 export type PostFormState = {
@@ -8,7 +9,8 @@ export type PostFormState = {
   message?: string;
 };
 
-export type UserCookie = {
-  userId: string | undefined;
-  userName: string | undefined;
+export type User = {
+  userId: string;
+  userName: string;
+  password: string;
 };

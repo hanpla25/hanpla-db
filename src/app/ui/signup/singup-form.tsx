@@ -53,7 +53,7 @@ export default function SignupForm() {
       </button>
       {state.message === "회원가입이 완료되었습니다." && (
         <>
-          <p>{state.message}</p>
+          <p className="text-green-600">{state.message}</p>
           <Link
             href="/"
             className="text-center text-blue-600 underline mt-2 hover:text-blue-800"

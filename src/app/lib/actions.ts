@@ -34,6 +34,7 @@ export async function login(_prevState: LoginFormState, formData: FormData) {
     return {
       error: "비밀번호 불일치",
       message: "비밀번호가 일치하지 않습니다.",
+      input: name,
     };
   }
 
@@ -89,6 +90,8 @@ export async function signup(
 export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete("userid");
+  cookieStore.delete("username");
+
   redirect("/");
 }
 

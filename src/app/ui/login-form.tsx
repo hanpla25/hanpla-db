@@ -24,6 +24,7 @@ export default function LoginForm() {
           id="name"
           name="name"
           placeholder="이름을 입력해주세요"
+          defaultValue={state.input}
           required
           className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
