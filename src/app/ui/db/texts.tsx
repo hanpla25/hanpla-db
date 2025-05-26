@@ -2,9 +2,30 @@
 
 import { useState } from "react";
 import { Text } from "@/app/lib/definitions";
+import { createClient } from "@/supabase/client";
 
 export default function Texts({ texts }: { texts: Text[] | null }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const supabase = createClient();
+
+  const handleDownload = async (filePath: string) => {
+    const { data, error } = await supabase.storage
+      .from("attachments")
+      .download(filePath.replace(/^.*\/(.*?)\/(.*?)$/, "$1/$2"));
+
+    if (error) {
+      console.error("다운로드 실패:", error);
+      return;
+    }
+
+    const fileName = filePath.split("/").pop() || "downloaded-file";
+    const url = URL.createObjectURL(data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   if (!texts || texts.length === 0) {
     return (
@@ -22,12 +43,9 @@ export default function Texts({ texts }: { texts: Text[] | null }) {
           className="flex flex-col bg-white rounded-[30px] shadow-md p-4"
         >
           <div className="flex min-h-24">
-            {/* 왼쪽: 텍스트 영역 */}
             <div className="flex-1 mr-4">
               <p className="break-all text-sm">{text.text}</p>
             </div>
-
-            {/* 오른쪽: 버튼 + 시간 */}
             <div className="flex flex-col items-end justify-between shrink-0 text-right">
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
@@ -49,14 +67,13 @@ export default function Texts({ texts }: { texts: Text[] | null }) {
                   const fileName = path.split("/").pop();
                   return (
                     <li key={i} className="mb-4">
-                      <a
-                        href={path}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() => handleDownload(path)}
                         className="text-blue-500 hover:underline"
                       >
                         {fileName}
-                      </a>
+                      </button>
                     </li>
                   );
                 })}

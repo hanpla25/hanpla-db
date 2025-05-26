@@ -12,7 +12,7 @@ const initialState: PostFormState = {
 };
 
 export default function TextForm() {
-  const [, formAction, pending] = useActionState(post, initialState);
+  const [state, formAction, pending] = useActionState(post, initialState);
   const [modalText, setModalText] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -34,6 +34,12 @@ export default function TextForm() {
       {showModal && (
         <div className="fixed top-1/3 left-1/2 -translate-x-1/2 px-6 py-3 bg-white border rounded-lg shadow-lg z-50">
           <span className="text-sm text-gray-700">{modalText}</span>
+        </div>
+      )}
+
+      {state?.error && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 px-6 py-3 bg-red-100 border border-red-400 text-red-700 rounded z-50">
+          {state.error}
         </div>
       )}
 
