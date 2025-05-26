@@ -41,25 +41,27 @@ export default function Texts({ texts }: { texts: Text[] | null }) {
             </div>
           </div>
 
-          {openIndex === index && text.attachments?.length > 0 && (
-            <ul className="mt-2 text-sm text-gray-600 list-disc list-inside">
-              {text.attachments.map((path: string, i: number) => {
-                const fileName = path.split("/").pop();
-                return (
-                  <li key={i} className="mb-4">
-                    <a
-                      href={`${path}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline"
-                    >
-                      {fileName}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          {openIndex === index &&
+            Array.isArray(text.attachments) &&
+            text.attachments.length > 0 && (
+              <ul className="mt-2 text-sm text-gray-600 list-disc list-inside">
+                {text.attachments.map((path: string, i: number) => {
+                  const fileName = path.split("/").pop();
+                  return (
+                    <li key={i} className="mb-4">
+                      <a
+                        href={path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline"
+                      >
+                        {fileName}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
         </div>
       ))}
     </div>

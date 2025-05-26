@@ -27,5 +27,5 @@ export type Text = {
   text: string;
   username: string;
   created_at: string;
-  attachment?: string;
+  attachments?: string[];
 };
