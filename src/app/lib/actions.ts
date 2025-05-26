@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/supabase/server";
-import { LoginFormState } from "./definitions";
+import { LoginFormState, PostFormState } from "./definitions";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -93,4 +93,62 @@ export async function logout() {
   cookieStore.delete("username");
 
   redirect("/");
+}
+
+export async function post(_prevState: PostFormState, formData: FormData) {
+  const text = formData.get("text");
+  if (typeof text !== "string" || !text) {
+    return { error: "텍스트가 없음" };
+  }
+
+  const cookieStore = await cookies();
+  const supabase = await createClient();
+
+  const files = formData.getAll("attachment");
+  const userId = cookieStore.get("userid")?.value ?? null;
+  const userName = cookieStore.get("username")?.value ?? null;
+
+  const uploadedFiles: string[] = [];
+  const timestamp = Date.now();
+
+  for (const [index, file] of files.entries()) {
+    if (!(file instanceof File) || file.size === 0) continue; 
+
+    const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin";
+    const filePath = `${userId}/${timestamp}-${index}.${ext}`;
+
+    const { data, error: uploadError } = await supabase.storage
+      .from("attachments")
+      .upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+    if (uploadError) {
+      console.error("파일 업로드 오류:", uploadError);
+      continue;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from("attachments")
+      .getPublicUrl(filePath);
+
+    if (publicUrlData?.publicUrl) {
+      uploadedFiles.push(publicUrlData.publicUrl);
+    }
+  }
+
+  const { error } = await supabase.from("texts").insert({
+    userid: userId,
+    username: userName,
+    text,
+    attachments: uploadedFiles,
+  });
+
+  if (error) {
+    console.log(error);
+    return { error: `에러메시지:${error.message}`, message: "에러" };
+  }
+
+  redirect("/db");
 }

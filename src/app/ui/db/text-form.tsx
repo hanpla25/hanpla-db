@@ -1,60 +1,52 @@
 "use client";
 
-import { useRef } from "react";
+import { post } from "@/app/lib/actions";
+import { PostFormState } from "@/app/lib/definitions";
+import { useActionState, useEffect, useState } from "react";
+import Attachment from "./attachment";
+import Button from "./button";
+import Textarea from "./textarea";
+
+const initialState: PostFormState = {
+  message: "",
+};
 
 export default function TextForm() {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [state, formAction, pending] = useActionState(post, initialState);
+  const [modalText, setModalText] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
-  const handleResize = () => {
-    const textarea = textareaRef.current;
-    const maxLine = 5;
-    if (textarea) {
-      textarea.style.height = "auto";
-      textarea.style.height = `${Math.min(
-        textarea.scrollHeight,
-        maxLine * 28
-      )}px`;
+  useEffect(() => {
+    if (pending) {
+      setModalText("저장 중...");
+      setShowModal(true);
+    } else if (showModal) {
+      setModalText("저장 완료!");
+      const timer = setTimeout(() => {
+        setShowModal(false);
+      }, 1500);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [pending]);
 
   return (
-    <form
-      action=""
-      className="fixed bottom-0 left-0 right-0 mx-auto max-w-[1258px] bg-white p-4 shadow-lg flex flex-col"
-    >
-      <textarea
-        name="text"
-        id="text"
-        className="w-full p-2 border rounded-md resize-none mb-4"
-        rows={1}
-        required
-        ref={textareaRef}
-        placeholder="내용을 입력하세요"
-        onInput={handleResize}
-      />
-      <div className="flex justify-between">
-        <input
-          type="file"
-          id="attachment"
-          name="attachment"
-          multiple
-          className="hidden"
-        />
+    <>
+      {showModal && (
+        <div className="fixed top-1/3 left-1/2 -translate-x-1/2 px-6 py-3 bg-white border rounded-lg shadow-lg z-50">
+          <span className="text-sm text-gray-700">{modalText}</span>
+        </div>
+      )}
 
-        <label
-          htmlFor="attachment"
-          className="inline-block cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
-        >
-          첨부파일
-        </label>
-
-        <button
-          type="submit"
-          className="ml-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
-        >
-          저장
-        </button>
-      </div>
-    </form>
+      <form
+        action={formAction}
+        className="fixed bottom-0 left-0 right-0 w-full mx-auto max-w-[1258px]"
+      >
+        <Attachment />
+        <div className="flex justify-between">
+          <Textarea />
+          <Button />
+        </div>
+      </form>
+    </>
   );
 }

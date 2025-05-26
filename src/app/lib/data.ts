@@ -29,7 +29,8 @@ export async function getText(userId: string | null) {
   const { data, error } = await supabase
     .from("texts")
     .select("*")
-    .eq("userid", userId);
+    .eq("userid", userId)
+    .order("id", { ascending: false }); 
 
   if (error || !data) return null;
 

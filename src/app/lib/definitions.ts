@@ -22,6 +22,7 @@ export type Post = {
 };
 
 export type Text = {
+  attachments: any;
   id: string;
   userid: number;
   text: string;
