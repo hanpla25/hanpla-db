@@ -12,7 +12,7 @@ const initialState: PostFormState = {
 };
 
 export default function TextForm() {
-  const [state, formAction, pending] = useActionState(post, initialState);
+  const [, formAction, pending] = useActionState(post, initialState);
   const [modalText, setModalText] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -27,7 +27,7 @@ export default function TextForm() {
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [pending]);
+  }, [pending, showModal]);
 
   return (
     <>

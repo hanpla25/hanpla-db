@@ -1,11 +1,11 @@
 export type LoginFormState = {
-  error?: any;
+  error?: string;
   message?: string;
   input?: string;
 };
 
 export type PostFormState = {
-  error?: any;
+  error?: string;
   message?: string;
 };
 
@@ -22,7 +22,6 @@ export type Post = {
 };
 
 export type Text = {
-  attachments: any;
   id: string;
   userid: number;
   text: string;

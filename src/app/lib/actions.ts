@@ -112,12 +112,12 @@ export async function post(_prevState: PostFormState, formData: FormData) {
   const timestamp = Date.now();
 
   for (const [index, file] of files.entries()) {
-    if (!(file instanceof File) || file.size === 0) continue; 
+    if (!(file instanceof File) || file.size === 0) continue;
 
     const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin";
     const filePath = `${userId}/${timestamp}-${index}.${ext}`;
 
-    const { data, error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from("attachments")
       .upload(filePath, file, {
         cacheControl: "3600",
