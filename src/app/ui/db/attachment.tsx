@@ -1,20 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function Attachment() {
   const [files, setFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
     const filesArray = Array.from(e.target.files);
     setFiles(filesArray);
-    console.log(filesArray);
   };
 
   const handleRemoveFile = (fileName: string) => {
-    setFiles((prevFiles) => prevFiles.filter((file) => file.name !== fileName));
+    const newFiles = files.filter((file) => file.name !== fileName);
+    setFiles(newFiles);
+
+    if (fileInputRef.current) {
+      const dataTransfer = new DataTransfer();
+      newFiles.forEach((file) => dataTransfer.items.add(file));
+      fileInputRef.current.files = dataTransfer.files;
+    }
   };
 
   return (
@@ -26,6 +33,7 @@ export default function Attachment() {
         multiple
         className="hidden"
         onChange={handleFileChange}
+        ref={fileInputRef}
       />
       <div className="flex items-center gap-4 overflow-hidden">
         <label
